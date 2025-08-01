@@ -2,8 +2,15 @@
 
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { useEffect, useState } from "react"
 
 export default function HomePage() {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Fondo de cerveza con filtro */}
@@ -128,33 +135,35 @@ export default function HomePage() {
         </motion.div>
       </div>
 
-      {/* Elementos decorativos flotantes */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-2 h-2 bg-orange-400/30 rounded-full"
-            initial={{
-              x: Math.random() * window.innerWidth,
-              y: window.innerHeight + 100,
-              opacity: 0,
-            }}
-            animate={{
-              y: -100,
-              opacity: [0, 1, 0],
-            }}
-            transition={{
-              duration: Math.random() * 3 + 4,
-              repeat: Number.POSITIVE_INFINITY,
-              delay: Math.random() * 2,
-              ease: "linear",
-            }}
-            style={{
-              left: `${Math.random() * 100}%`,
-            }}
-          />
-        ))}
-      </div>
+      {/* Elementos decorativos flotantes - solo se renderizan en el cliente */}
+      {mounted && (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(6)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-2 h-2 bg-orange-400/30 rounded-full"
+              initial={{
+                x: Math.random() * (typeof window !== "undefined" ? window.innerWidth : 1200),
+                y: (typeof window !== "undefined" ? window.innerHeight : 800) + 100,
+                opacity: 0,
+              }}
+              animate={{
+                y: -100,
+                opacity: [0, 1, 0],
+              }}
+              transition={{
+                duration: Math.random() * 3 + 4,
+                repeat: Number.POSITIVE_INFINITY,
+                delay: Math.random() * 2,
+                ease: "linear",
+              }}
+              style={{
+                left: `${Math.random() * 100}%`,
+              }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
